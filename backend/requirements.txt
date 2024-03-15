@@ -37,3 +37,4 @@ fastapi
 uvicorn
 python-multipart
 chardet
+PyMuPDF>=1.18.19

@@ -7,35 +7,50 @@ import os
 openai_api_key = os.environ.get('OPENAI_API_KEY')
 from langchain.document_loaders import TextLoader, PDFMinerLoader, UnstructuredWordDocumentLoader, CSVLoader
 
-def load_documents(file_path):
-    if file_path.endswith('.txt'):
-        loader = TextLoader(file_path)
-    elif file_path.endswith('.pdf'):
-        loader = PyPDFLoader(file_path)
-    elif file_path.endswith('.doc') or file_path.endswith('.docx'):
-        loader = UnstructuredWordDocumentLoader(file_path)
-    elif file_path.endswith('.csv'):
-        loader = CSVLoader(file_path)
-    else:
-        raise ValueError(f"Unsupported file format: {file_path}")
+# def load_documents(file_path):
+#     if file_path.endswith('.txt'):
+#         loader = TextLoader(file_path)
+#     elif file_path.endswith('.pdf'):
+#         loader = PyPDFLoader(file_path)
+#     elif file_path.endswith('.doc') or file_path.endswith('.docx'):
+#         loader = UnstructuredWordDocumentLoader(file_path)
+#     elif file_path.endswith('.csv'):
+#         loader = CSVLoader(file_path)
+#     else:
+#         raise ValueError(f"Unsupported file format: {file_path}")
 
-    documents = loader.load()
-    return documents
-# from langchain.docstore.document import Document
-# import chardet
+#     documents = loader.load()
+#     return documents
+from fastapi import UploadFile
+import fitz  # PyMuPDF
+from langchain.docstore.document import Document
 
-# def load_documents(file):
-#     content = file.file.read()
-#     encoding = chardet.detect(content)['encoding']
-#     if encoding is None:
-#         encoding = 'utf-8'  # Fallback encoding
-#     try:
-#         content = content.decode(encoding)
-#     except UnicodeDecodeError:
-#         content = content.decode('latin-1')  # Fallback encoding for decoding errors
-#     metadata = {'source': file.filename}
-#     document = Document(page_content=content, metadata=metadata)
-#     return [document]
+def load_documents(file: UploadFile):
+    # Assuming the input 'file' is an UploadFile from FastAPI which contains a PDF
+    try:
+        # Save temporary file to read with PyMuPDF
+        temp_file_path = f"temp_{file.filename}"
+        with open(temp_file_path, "wb") as temp_file:
+            temp_file.write(file.file.read())
+
+        # Open the PDF with PyMuPDF
+        doc = fitz.open(temp_file_path)
+        content = ""
+        for page in doc:
+            content += page.get_text()
+
+        # Cleanup: close the document and remove the temporary file
+        doc.close()
+        os.remove(temp_file_path)
+    except Exception as e:
+        # Handle exceptions, such as file read errors or if the file is not a PDF
+        print(f"Error processing document: {e}")
+        content = "Error processing document."
+
+    metadata = {'source': file.filename}
+    document = Document(page_content=content, metadata=metadata)
+    return [document]
+
 
 from langchain.text_splitter import CharacterTextSplitter
 

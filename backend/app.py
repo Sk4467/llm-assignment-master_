@@ -8,9 +8,20 @@ load_dotenv()
 openai_api_key = os.environ.get('OPENAI_API_KEY')
 
 app = FastAPI()
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # Allows only requests from your React app
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+)
 
 @app.post("/process-file")
 async def process_file(collection_name: str = Form(...), file: UploadFile = File(...)):
+    print("Received collection_name:", collection_name)
+    print("Received file:", file.filename)
     # Load documents
     documents = load_documents(file)
 
@@ -19,15 +30,23 @@ async def process_file(collection_name: str = Form(...), file: UploadFile = File
 
     # Create embeddings and store in Chroma
     vector_store = create_embeddings(chunked_docs, collection_name)
+    preview_length = 750  # Adjust based on desired preview size
+    document_previews = [doc.page_content[:preview_length] for doc in documents]  # or whatever attribute holds the content
 
-    return {"message": "File processed successfully"}
+    # Return the success message along with the document previews
+    return {"message": "File processed successfully", "document_preview": document_previews}
+from pydantic import BaseModel
 
+class QueryRequest(BaseModel):
+    collection_name: str
+    query: str
 @app.post("/query")
-async def query(collection_name: str = Form(...), query: str = Form(...)):
+async def query(request: QueryRequest):
     # Load the RetrievalQA chain
-    qa_chain = load_qa_chain(collection_name)
+    print(request.dict())
+    qa_chain = load_qa_chain(request.collection_name)
 
     # Process the query
-    result = process_query(query, qa_chain)
+    result = process_query(request.query, qa_chain)
 
     return {"result": result}
