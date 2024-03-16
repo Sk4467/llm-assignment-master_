@@ -4,6 +4,9 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import Chroma
 from os.path import join
 import os
+from dotenv import load_dotenv
+# os.environ['OPENAI_API_KEY']= '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'
+load_dotenv(r'C:\Users\sksha\Desktop\llm-assignment-master\llm-assignment-master\llm-assignment-master_\backend\.env')
 openai_api_key = os.environ.get('OPENAI_API_KEY')
 from langchain.document_loaders import TextLoader, PDFMinerLoader, UnstructuredWordDocumentLoader, CSVLoader
 
@@ -22,30 +25,59 @@ from langchain.document_loaders import TextLoader, PDFMinerLoader, UnstructuredW
 #     documents = loader.load()
 #     return documents
 from fastapi import UploadFile
+from typing import List
 import fitz  # PyMuPDF
+import pandas as pd
+import docx
 from langchain.docstore.document import Document
+def read_pdf(file_path: str) -> str:
+    doc = fitz.open(file_path)
+    text = ""
+    for page in doc:
+        text += page.get_text()
+    return text
 
-def load_documents(file: UploadFile):
-    # Assuming the input 'file' is an UploadFile from FastAPI which contains a PDF
+def read_docx(file_path: str) -> str:
+    doc = docx.Document(file_path)
+    fullText = []
+    for para in doc.paragraphs:
+        fullText.append(para.text)
+    return '\n'.join(fullText)
+
+def read_csv(file_path: str) -> str:
+    df = pd.read_csv(file_path)
+    return df.to_string()
+
+def read_txt(file_path: str) -> str:
+    with open(file_path, 'r', encoding='utf-8') as file:
+        return file.read()
+
+async def load_documents(file: UploadFile)->List[Document]:
+    temp_file_path = f"temp_{file.filename}"
     try:
-        # Save temporary file to read with PyMuPDF
-        temp_file_path = f"temp_{file.filename}"
+        # Save the uploaded file to a temporary file
         with open(temp_file_path, "wb") as temp_file:
-            temp_file.write(file.file.read())
+            temp_file.write(await file.read())
 
-        # Open the PDF with PyMuPDF
-        doc = fitz.open(temp_file_path)
         content = ""
-        for page in doc:
-            content += page.get_text()
-
-        # Cleanup: close the document and remove the temporary file
-        doc.close()
-        os.remove(temp_file_path)
+        if file.filename.endswith('.pdf'):
+            content = read_pdf(temp_file_path)
+        elif file.filename.endswith('.docx'):
+            content = read_docx(temp_file_path)
+        elif file.filename.endswith('.csv'):
+            content = read_csv(temp_file_path)
+        elif file.filename.endswith('.txt'):
+            content = read_txt(temp_file_path)
+        else:
+            raise ValueError("Unsupported file format")
     except Exception as e:
-        # Handle exceptions, such as file read errors or if the file is not a PDF
+        # Handle general errors - log or adjust as necessary for your application
         print(f"Error processing document: {e}")
         content = "Error processing document."
+    finally:
+        # Cleanup: remove the temporary file
+        if os.path.exists(temp_file_path):
+            os.remove(temp_file_path)
 
     metadata = {'source': file.filename}
     document = Document(page_content=content, metadata=metadata)

@@ -22,5 +22,5 @@
   },
   "include": [
     "src"
-  ]
+, "src/components/FileUpload.tsx", "src/components/QueryComponent.tsx"  ]
 }

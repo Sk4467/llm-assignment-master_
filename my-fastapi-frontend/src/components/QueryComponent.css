@@ -1,0 +1,63 @@
+/* QueryComponent.css */
+.query-container {
+    background-color: #fff; /* Same here, use a light color for contrast */
+    color: #333;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 500px;
+    margin: 20px auto;
+    position: relative;
+    z-index: 10;
+  }
+  
+  /* Similar styles for input and button as in FileUpload.css */
+  .query-container label {
+    display: block;
+    margin-bottom: 10px;
+  }
+  
+  .query-container input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+  }
+  
+  .query-container button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #008cba;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .query-container button:hover {
+    background-color: #007399;
+  }
+  .query-result {
+    width: 100%; /* Full width of the container */
+    min-height: 100px; /* Minimum height for aesthetics */
+    background-color: #fff; /* White background for a clean look */
+    border: none; /* Remove border for a modern appearance */
+    border-radius: 10px; /* Rounded borders for a softer look */
+    padding: 20px; /* Generous padding for the content */
+    margin-top: 20px; /* Margin to separate from the form */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Readable font */
+    font-size: 1em; /* Appropriate font size */
+    color: #333; /* Dark text for readability */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Smooth box-shadow for depth */
+    line-height: 1.6; /* Spacing between lines for readability */
+    overflow-y: auto; /* Adds scroll if content is too long */
+    white-space: pre-wrap; /* Preserves formatting and spaces */
+  }
+  
+  /* Hover effect for interaction feedback */
+  .query-result:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }

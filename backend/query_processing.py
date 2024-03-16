@@ -3,6 +3,9 @@ from langchain.vectorstores import Chroma
 from langchain.llms import OpenAI
 from langchain.chains import RetrievalQA
 import os
+from dotenv import load_dotenv
+# os.environ['OPENAI_API_KEY']= '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'
+load_dotenv(r'C:\Users\sksha\Desktop\llm-assignment-master\llm-assignment-master\llm-assignment-master_\backend\.env')
 openai_api_key = os.environ.get('OPENAI_API_KEY')
 def load_qa_chain(collection_name):
     # Load the vector store from disk

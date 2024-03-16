@@ -1,4 +1,4 @@
-.App {
+/* .App {
   text-align: center;
 }
 
@@ -35,4 +35,105 @@
   to {
     transform: rotate(360deg);
   }
+} */
+/* App.css */
+
+/* App.css */
+@import url('https://fonts.googleapis.com/css2?family=Monoton&display=swap'); /* Import the abstract font */
+
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif; /* Default font for the rest of the app */
 }
+
+.App {
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
+  justify-content: flex-start; /* Align to the top */
+  align-items: center;
+  height: 100vh;
+  position: relative;
+  z-index: 2; /* Ensures content in .App is above background layers */
+  overflow: auto; /* Allows content to scroll if it exceeds the viewport */
+}
+
+@keyframes twinkle {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
+
+/* Ensure full coverage of the starry background */
+.stars, .twinkling {
+  position: fixed; /* Changed from absolute to fixed for full coverage */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: -1; /* Ensure the background is behind everything */
+}
+
+.stars {
+  background: url('https://www.transparenttextures.com/patterns/stardust.png') repeat;
+  background-color: #000;
+}
+
+.twinkling {
+  background: transparent url('https://www.transparenttextures.com/patterns/stardust.png') repeat;
+  animation: twinkle 200s infinite linear;
+}
+
+/* Style for the headline */
+.App-header {
+  text-align: center;
+  width: 100%;
+  padding: 20px;
+  position: fixed; /* Fix position to the top */
+  top: 0; /* Align to the top */
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.85); /* Semi-transparent dark background */
+  z-index: 3; /* Above content and background */
+}
+
+.App-header h1 {
+  font-family: 'Monoton', cursive; /* Use the imported abstract font */
+  font-size: 3em; /* Adjust the font size */
+  color: #ffffff; /* White text for visibility */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Text shadow for readability */
+  margin: 0;
+}
+
+/* Adjusting size and alignment of the form containers */
+.upload-container, .query-container {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 80%; /* Increase width */
+  max-width: 800px; /* Maximum width */
+  margin: 20px auto;
+  position: relative; /* Stack on top of background */
+  z-index: 2; /* Above the starry background */
+  overflow: hidden; /* Hide overflow */
+}
+
+/* Ensure there is padding at the top for the fixed header */
+.content {
+  padding-top: 100px; /* Adjust based on the header's height */
+}
+
+/* ... other styles ... */

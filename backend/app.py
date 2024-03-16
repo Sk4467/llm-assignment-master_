@@ -4,8 +4,10 @@ from query_processing import load_qa_chain, process_query
 from dotenv import load_dotenv
 import os
 
-load_dotenv()
+load_dotenv(r'C:\Users\sksha\Desktop\llm-assignment-master\llm-assignment-master\llm-assignment-master_\backend\.env')
+
 openai_api_key = os.environ.get('OPENAI_API_KEY')
+print(openai_api_key)
 
 app = FastAPI()
 from fastapi.middleware.cors import CORSMiddleware
@@ -23,7 +25,7 @@ async def process_file(collection_name: str = Form(...), file: UploadFile = File
     print("Received collection_name:", collection_name)
     print("Received file:", file.filename)
     # Load documents
-    documents = load_documents(file)
+    documents = await load_documents(file)
 
     # Chunk documents
     chunked_docs = chunk_documents(documents, chunk_size=500, chunk_overlap=100)
