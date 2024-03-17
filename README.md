@@ -1,6 +1,6 @@
 # Covertational Bot
 
-Chitty Chitty Chat Chat is a modern web application that leverages the power of OpenAI's language models to provide an interactive chat experience. Our backend is built with FastAPI, and the frontend is crafted with React.
+Conversational BOT is a modern web application that leverages the power of OpenAI's language models to provide an interactive chat experience. Our backend is built with FastAPI, and the frontend is crafted with React.
 
 ## Features
 
